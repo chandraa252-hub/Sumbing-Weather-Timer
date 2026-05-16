@@ -26,7 +26,7 @@ export function wrapHandler<T extends (props: HandlerProps<any>) => Promise<void
     func: T
 ): [string, (...args: Parameters<T>) => Promise<void>] {
     const wrappedFunction = async (...args: Parameters<T>) => {
-        withScope(async (scope) => {
+        await withScope(async (scope) => {
             scope.setTag("handler", handler);
             try {
                 return await func({ args, scope });
