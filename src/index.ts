@@ -29,7 +29,16 @@ async function main() {
     client.on(...wrapHandler("guildDelete", handleGuildDelete));
     client.on(...wrapHandler("interactionCreate", handleInteractionCreate));
 
-    client.login(environment.discord.token);
+    logger.info(undefined, "Logging in to Discord...");
+    client.login(environment.discord.token).then(() => {
+        logger.info(undefined, "Discord login successful");
+    }).catch((err) => {
+        logger.error(undefined, err);
+        process.exit(1);
+    });
 }
 
-main();
+main().catch((err) => {
+    console.error("Fatal error in main():", err);
+    process.exit(1);
+});
