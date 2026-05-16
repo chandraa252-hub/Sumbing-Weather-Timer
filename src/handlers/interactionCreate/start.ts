@@ -27,7 +27,8 @@ export async function start(interaction: ChatInputCommandInteraction, scope: Sco
     }
 
     const config = await configRepo.get(guildId);
-    const connection = await getVoiceConnection(config, interaction.member as GuildMember);
+    const member = await guild.members.fetch(interaction.user.id);
+    const connection = await getVoiceConnection(config, member);
 
     if (connection === undefined) {
         await interaction.editReply(
