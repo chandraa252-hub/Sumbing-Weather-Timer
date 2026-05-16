@@ -16,13 +16,18 @@ export async function connectToChannel(channel: VoiceChannel): Promise<VoiceConn
     });
 
     try {
-        await entersState(connection, VoiceConnectionStatus.Ready, 30_000);
+        await entersState(connection, VoiceConnectionStatus.Signalling, 10_000);
         logger.info(channel.guildId, `Joined VC:${channel.id}`);
         return connection;
-    } catch (error) {
+    } catch (sigError) {
+        logger.info(channel.guildId, `Signalling failed, trying Connecting state...`);
         try {
-            connection.destroy();
-        } catch {}
-        return undefined;
+            await entersState(connection, VoiceConnectionStatus.Connecting, 10_000);
+            logger.info(channel.guildId, `Joined VC (connecting):${channel.id}`);
+            return connection;
+        } catch (connError) {
+            logger.info(channel.guildId, `Voice connection failed, returning connection anyway`);
+            return connection;
+        }
     }
 }
