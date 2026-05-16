@@ -16,7 +16,7 @@ export async function connectToChannel(channel: VoiceChannel): Promise<VoiceConn
     });
 
     try {
-        await entersState(connection, VoiceConnectionStatus.Ready, 3_000);
+        await entersState(connection, VoiceConnectionStatus.Ready, 30_000);
         logger.info(channel.guildId, `Joined VC:${channel.id}`);
         return connection;
     } catch (error) {
