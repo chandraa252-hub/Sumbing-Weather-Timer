@@ -23,5 +23,5 @@ export async function help(interaction: ChatInputCommandInteraction) {
         ])
         .setFooter({ text: "Made by Andi Pätzold" });
 
-    await interaction.reply({ embeds: [embed] });
+    await interaction.editReply({ embeds: [embed] });
 }

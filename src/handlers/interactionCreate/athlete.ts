@@ -18,13 +18,13 @@ export async function athlete(interaction: ChatInputCommandInteraction) {
     logger.info(guildId, `Options: ${JSON.stringify(options)}`);
 
     if (options.time <= 0) {
-        await interaction.reply("Invalid time");
+        await interaction.editReply("Invalid time");
         return;
     }
 
     const parsedUser = await parseUser(options.athlete, guild);
     if (!config.athletes.some((a) => isSameAthlete(a, parsedUser))) {
-        await interaction.reply(`${options.athlete} is not configured as an athlete`);
+        await interaction.editReply(`${options.athlete} is not configured as an athlete`);
         return;
     }
 
@@ -40,5 +40,5 @@ export async function athlete(interaction: ChatInputCommandInteraction) {
         ),
     });
 
-    await interaction.reply(`Time of ${athleteToString(parsedUser)} set to ${options.time}s`);
+    await interaction.editReply(`Time of ${athleteToString(parsedUser)} set to ${options.time}s`);
 }

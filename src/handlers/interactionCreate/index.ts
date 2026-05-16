@@ -39,10 +39,12 @@ export async function handleInteractionCreate({ args: [interaction], scope }: Ha
     const commandName = interaction.options.getSubcommand();
     logger.info(guildId, `Slash Command: ${commandName}`);
 
+    await interaction.deferReply();
+
     const command = commandsMap[commandName];
     if (command) {
         await command(interaction, scope);
     } else {
-        await interaction.reply("Unsupported command");
+        await interaction.editReply("Unsupported command");
     }
 }

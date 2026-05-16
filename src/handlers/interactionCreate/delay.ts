@@ -12,18 +12,15 @@ export async function delay(interaction: ChatInputCommandInteraction) {
     logger.info(guildId, `Options: ${SLASH_COMMAND.commands.delay.delay}=${newStartDelay}`);
 
     if (newStartDelay === null) {
-        await interaction.reply(`Start delay: ${config.startDelay}`);
+        await interaction.editReply(`Start delay: ${config.startDelay}`);
         return;
     }
 
     if (!isValidDelay(newStartDelay)) {
-        await interaction.reply({
-            content: "Invalid delay",
-            flags: ["Ephemeral"],
-        });
+        await interaction.editReply("Invalid delay");
         return;
     }
 
     await configRepo.set({ ...config, startDelay: newStartDelay });
-    await interaction.reply(`Start delay: ${newStartDelay}s`);
+    await interaction.editReply(`Start delay: ${newStartDelay}s`);
 }

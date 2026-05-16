@@ -15,7 +15,7 @@ export async function toast(interaction: ChatInputCommandInteraction) {
 
     const timer = await timerRepo.get(guildId);
     if (!timer) {
-        await interaction.reply(`Start the timer first using \`/${SLASH_COMMAND.name} start\``);
+        await interaction.editReply(`Start the timer first using \`/${SLASH_COMMAND.name} start\``);
         return;
     }
 
@@ -31,25 +31,19 @@ export async function toast(interaction: ChatInputCommandInteraction) {
         : { name: interaction.member!.user.username, userId: interaction.member!.user.id };
 
     if (!config.athletes.find((athlete) => isSameAthlete(athlete, athleteToToast))) {
-        await interaction.reply({
-            content: "I am not sure who is feeling toasted",
-            flags: ["Ephemeral"],
-        });
+        await interaction.editReply("I am not sure who is feeling toasted");
         return;
     }
 
     if (timer.disabledAthletes.find((disabledAthlete) => isSameAthlete(disabledAthlete, athleteToToast))) {
-        await interaction.reply({
-            content: options.athlete ? "The athlete is already toasted" : "You are already toasted",
-            flags: ["Ephemeral"],
-        });
+        await interaction.editReply(options.athlete ? "The athlete is already toasted" : "You are already toasted");
         return;
     }
 
     await setAthleteAsToast(guildId, athleteToToast);
     await updateStatusMessage(guildId);
 
-    await interaction.reply(
+    await interaction.editReply(
         `${athleteToString(athleteToToast)} is now toasted. Use \`/${SLASH_COMMAND["name"]} fresh ${athleteToString(
             athleteToToast
         )}\` when ${athleteToString(athleteToToast)} is feeling good again.`

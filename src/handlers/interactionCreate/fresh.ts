@@ -15,7 +15,7 @@ export async function fresh(interaction: ChatInputCommandInteraction) {
 
     const timer = await timerRepo.get(guildId);
     if (!timer) {
-        await interaction.reply(`Start the timer first using \`/${SLASH_COMMAND.name} start\``);
+        await interaction.editReply(`Start the timer first using \`/${SLASH_COMMAND.name} start\``);
         return;
     }
 
@@ -35,23 +35,17 @@ export async function fresh(interaction: ChatInputCommandInteraction) {
         : { name: interaction.member!.user.username, userId: interaction.member!.user.id };
 
     if (!config.athletes.find((athlete) => isSameAthlete(athlete, athleteToFresh))) {
-        await interaction.reply({
-            content: "I am not sure who is feeling fresh again",
-            flags: ["Ephemeral"],
-        });
+        await interaction.editReply("I am not sure who is feeling fresh again");
         return;
     }
 
     if (!timer.disabledAthletes.find((disabledAthlete) => isSameAthlete(disabledAthlete, athleteToFresh))) {
-        await interaction.reply({
-            content: options.athlete ? "The athlete is already fresh" : "You are already fresh",
-            flags: ["Ephemeral"],
-        });
+        await interaction.editReply(options.athlete ? "The athlete is already fresh" : "You are already fresh");
         return;
     }
 
     await setAthleteAsFresh(guildId, athleteToFresh);
     await updateStatusMessage(guildId);
 
-    await interaction.reply(`${athleteToString(user)} is now fresh`);
+    await interaction.editReply(`${athleteToString(user)} is now fresh`);
 }

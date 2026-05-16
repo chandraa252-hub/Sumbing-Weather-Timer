@@ -23,17 +23,16 @@ export async function athletes(interaction: ChatInputCommandInteraction) {
     logger.info(guildId, `Options: ${JSON.stringify(options)}`);
 
     if (options.athletes.every((a) => a === null) && options.times.every((t) => t === null)) {
-        await interaction.reply(
+        await interaction.editReply(
             config.athletes.map((athlete) => `• ${athleteToString(athlete)} (${athlete.time}s)`).join("\n")
         );
         return;
     }
 
     if (options.athletes.every((a) => a === null) && options.times.every((t) => t !== null)) {
-        await interaction.reply({
-            content: `You must provide the names of all athletes. To only update the time of a single athlete, use \`/${SLASH_COMMAND["name"]} athlete <name> <time>\`.`,
-            flags: ["Ephemeral"],
-        });
+        await interaction.editReply(
+            `You must provide the names of all athletes. To only update the time of a single athlete, use \`/${SLASH_COMMAND["name"]} athlete <name> <time>\`.`
+        );
         return;
     }
 
@@ -49,10 +48,7 @@ export async function athletes(interaction: ChatInputCommandInteraction) {
     );
 
     if (athletes.length === 0) {
-        await interaction.reply({
-            content: "Error updating the athletes",
-            flags: ["Ephemeral"],
-        });
+        await interaction.editReply("Error updating the athletes");
         return;
     }
 
@@ -61,6 +57,6 @@ export async function athletes(interaction: ChatInputCommandInteraction) {
         athletes,
     });
 
-    await interaction.reply(`Athletes updated
+    await interaction.editReply(`Athletes updated
 ${athletes.map((athlete) => `• ${athleteToString(athlete)} (${athlete.time}s)`).join("\n")}`);
 }

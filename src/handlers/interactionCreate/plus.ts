@@ -12,15 +12,15 @@ export async function plus(interaction: ChatInputCommandInteraction): Promise<vo
         time: interaction.options.getNumber("time", true),
     };
     if (!isValidDelay(options.time)) {
-        await interaction.reply(`"${options.time}" is not a valid time`);
+        await interaction.editReply(`"${options.time}" is not a valid time`);
         return;
     }
 
     if (!(await timerRepo.exists(guildId))) {
-        await interaction.reply(`Start the timer first using \`/${SLASH_COMMAND.name} start\``);
+        await interaction.editReply(`Start the timer first using \`/${SLASH_COMMAND.name} start\``);
         return;
     }
 
     await addTimeToCurrentAthlete(guildId, options.time);
-    await Promise.all([interaction.reply(`Added ${options.time} seconds`), updateStatusMessage(guildId)]);
+    await Promise.all([interaction.editReply(`Added ${options.time} seconds`), updateStatusMessage(guildId)]);
 }

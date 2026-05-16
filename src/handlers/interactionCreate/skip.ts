@@ -8,11 +8,11 @@ export async function skip(interaction: ChatInputCommandInteraction): Promise<vo
     const guildId = interaction.guild!.id;
 
     if (!(await timerRepo.exists(guildId))) {
-        await interaction.reply(`Start the timer first using \`/${SLASH_COMMAND.name} start\``);
+        await interaction.editReply(`Start the timer first using \`/${SLASH_COMMAND.name} start\``);
         return;
     }
 
     await skipCurrentAthlete(guildId);
 
-    await Promise.all([interaction.reply("Athlete skipped"), updateStatusMessage(guildId)]);
+    await Promise.all([interaction.editReply("Athlete skipped"), updateStatusMessage(guildId)]);
 }

@@ -11,10 +11,7 @@ export async function stop(interaction: ChatInputCommandInteraction, scope: Scop
 
     if (!(await timerRepo.exists(guildId))) {
         logger.info(guildId, "Timer is not running");
-        await interaction.reply({
-            content: "Timer is not running",
-            flags: ["Ephemeral"],
-        });
+        await interaction.editReply("Timer is not running");
         return;
     }
 
@@ -28,5 +25,5 @@ export async function stop(interaction: ChatInputCommandInteraction, scope: Scop
         connection.destroy();
     }
 
-    await interaction.reply("Timer stopped");
+    await interaction.editReply("Timer stopped");
 }

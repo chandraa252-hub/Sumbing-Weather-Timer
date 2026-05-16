@@ -17,12 +17,12 @@ export async function language(interaction: ChatInputCommandInteraction) {
 
     if (!newLanguageKey) {
         const language = LANGUAGES.find((language) => language.key === config.languageKey)!;
-        await interaction.reply(`Language: ${language.name}`);
+        await interaction.editReply(`Language: ${language.name}`);
         return;
     }
 
     await configRepo.set({ ...config, languageKey: newLanguageKey });
 
     const language = LANGUAGES.find((language) => language.key === newLanguageKey)!;
-    await interaction.reply(`Language: ${language.name}`);
+    await interaction.editReply(`Language: ${language.name}`);
 }
