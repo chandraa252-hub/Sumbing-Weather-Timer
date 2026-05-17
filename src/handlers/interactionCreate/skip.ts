@@ -14,5 +14,5 @@ export async function skip(interaction: ChatInputCommandInteraction): Promise<vo
 
     await skipCurrentAthlete(guildId);
 
-    await Promise.all([interaction.editReply("Athlete skipped"), updateStatusMessage(guildId)]);
+    await Promise.all([interaction.editReply("Weather skipped"), updateStatusMessage(guildId)]);
 }

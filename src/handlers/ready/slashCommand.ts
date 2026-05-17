@@ -61,7 +61,7 @@ const command: Omit<ChatInputApplicationCommandData, "name"> = {
         {
             type: ApplicationCommandOptionType.Subcommand,
             name: SLASH_COMMAND.commands.skip.name,
-            description: "Skip the current athlete",
+            description: "Skip the current weather",
         },
         {
             type: ApplicationCommandOptionType.Subcommand,
@@ -71,18 +71,18 @@ const command: Omit<ChatInputApplicationCommandData, "name"> = {
         {
             type: ApplicationCommandOptionType.Subcommand,
             name: SLASH_COMMAND.commands.athlete.name,
-            description: "Set the time of a specific athlete",
+            description: "Set the time of a specific weather",
             options: [
                 {
                     type: ApplicationCommandOptionType.String,
                     name: SLASH_COMMAND.commands.athlete.athlete,
-                    description: "The athlete to set the time for",
+                    description: "The weather to set the time for",
                     required: true,
                 },
                 {
                     type: ApplicationCommandOptionType.Integer,
                     name: SLASH_COMMAND.commands.athlete.time,
-                    description: "The time to set the athlete to",
+                    description: "The time to set the weather to",
                     required: true,
                 },
             ],
@@ -117,18 +117,18 @@ const command: Omit<ChatInputApplicationCommandData, "name"> = {
         {
             type: ApplicationCommandOptionType.Subcommand,
             name: SLASH_COMMAND.commands.athletes.name,
-            description: "Get or set athletes",
+            description: "Get or set weathers",
             options: range(1, SLASH_COMMAND.commands.athletes.athletesCount + 1).flatMap((i) => [
                 {
                     type: ApplicationCommandOptionType.String,
                     name: `${SLASH_COMMAND.commands.athletes.athletesPrefix}${i}`,
-                    description: `Athlete ${i}`,
+                    description: `Weather ${i}`,
                     required: false,
                 },
                 {
                     type: ApplicationCommandOptionType.Integer,
                     name: `${SLASH_COMMAND.commands.athletes.timePrefix}${i}`,
-                    description: `Time in seconds for athlete ${1}`,
+                    description: `Time in seconds for weather ${i}`,
                     required: false,
                 },
             ]),
@@ -136,12 +136,12 @@ const command: Omit<ChatInputApplicationCommandData, "name"> = {
         {
             type: ApplicationCommandOptionType.Subcommand,
             name: SLASH_COMMAND.commands.fresh.name,
-            description: "Mark yourself or an athlete as fresh",
+            description: "Mark yourself or a weather as fresh",
             options: [
                 {
                     type: ApplicationCommandOptionType.String,
                     name: SLASH_COMMAND.commands.fresh.athlete,
-                    description: "Athlete to mark as fresh",
+                    description: "Weather to mark as fresh",
                     required: false,
                 },
             ],
@@ -149,12 +149,12 @@ const command: Omit<ChatInputApplicationCommandData, "name"> = {
         {
             type: ApplicationCommandOptionType.Subcommand,
             name: SLASH_COMMAND.commands.toast.name,
-            description: "Mark yourself or an athlete as toasted",
+            description: "Mark yourself or a weather as toasted",
             options: [
                 {
                     type: ApplicationCommandOptionType.String,
                     name: SLASH_COMMAND.commands.toast.athlete,
-                    description: "Athlete to mark as toasted",
+                    description: "Weather to mark as toasted",
                     required: false,
                 },
             ],
@@ -162,12 +162,12 @@ const command: Omit<ChatInputApplicationCommandData, "name"> = {
         {
             type: ApplicationCommandOptionType.Subcommand,
             name: SLASH_COMMAND.commands.plus.name,
-            description: "Add time to the current athlete",
+            description: "Add time to the current weather",
             options: [
                 {
                     type: ApplicationCommandOptionType.Number,
                     name: SLASH_COMMAND.commands.plus.time,
-                    description: "Time in seconds to add to the current user",
+                    description: "Time in seconds to add to the current weather",
                     required: true,
                 },
             ],

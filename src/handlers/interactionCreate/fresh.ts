@@ -40,7 +40,7 @@ export async function fresh(interaction: ChatInputCommandInteraction) {
     }
 
     if (!timer.disabledAthletes.find((disabledAthlete) => isSameAthlete(disabledAthlete, athleteToFresh))) {
-        await interaction.editReply(options.athlete ? "The athlete is already fresh" : "You are already fresh");
+        await interaction.editReply(options.athlete ? "The weather is already fresh" : "You are already fresh");
         return;
     }
 

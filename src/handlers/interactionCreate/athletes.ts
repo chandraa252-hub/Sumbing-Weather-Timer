@@ -31,7 +31,7 @@ export async function athletes(interaction: ChatInputCommandInteraction) {
 
     if (options.athletes.every((a) => a === null) && options.times.every((t) => t !== null)) {
         await interaction.editReply(
-            `You must provide the names of all athletes. To only update the time of a single athlete, use \`/${SLASH_COMMAND["name"]} athlete <name> <time>\`.`
+            `You must provide the names of all weathers. To only update the time of a single weather, use \`/${SLASH_COMMAND["name"]} weather <name> <time>\`.`
         );
         return;
     }
@@ -48,7 +48,7 @@ export async function athletes(interaction: ChatInputCommandInteraction) {
     );
 
     if (athletes.length === 0) {
-        await interaction.editReply("Error updating the athletes");
+        await interaction.editReply("Error updating the weathers");
         return;
     }
 
@@ -57,6 +57,6 @@ export async function athletes(interaction: ChatInputCommandInteraction) {
         athletes,
     });
 
-    await interaction.editReply(`Athletes updated
+    await interaction.editReply(`Weathers updated
 ${athletes.map((athlete) => `• ${athleteToString(athlete)} (${athlete.time}s)`).join("\n")}`);
 }

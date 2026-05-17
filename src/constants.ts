@@ -15,8 +15,8 @@ export const SLASH_COMMAND = {
         stop: "stop",
         help: "help",
         athlete: {
-            name: "athlete",
-            athlete: "athlete",
+            name: "weather",
+            athlete: "weather",
             time: "time",
         },
         language: {
@@ -28,18 +28,18 @@ export const SLASH_COMMAND = {
             delay: "delay",
         },
         athletes: {
-            name: "athletes",
+            name: "weathers",
             athletesCount: 8,
-            athletesPrefix: "athlete",
+            athletesPrefix: "weather",
             timePrefix: "time",
         },
         toast: {
             name: "toast",
-            athlete: "athlete",
+            athlete: "weather",
         },
         fresh: {
             name: "fresh",
-            athlete: "athlete",
+            athlete: "weather",
         },
         skip: {
             name: "skip",

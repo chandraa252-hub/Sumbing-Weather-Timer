@@ -36,7 +36,7 @@ export async function toast(interaction: ChatInputCommandInteraction) {
     }
 
     if (timer.disabledAthletes.find((disabledAthlete) => isSameAthlete(disabledAthlete, athleteToToast))) {
-        await interaction.editReply(options.athlete ? "The athlete is already toasted" : "You are already toasted");
+        await interaction.editReply(options.athlete ? "The weather is already toasted" : "You are already toasted");
         return;
     }
 
@@ -46,6 +46,6 @@ export async function toast(interaction: ChatInputCommandInteraction) {
     await interaction.editReply(
         `${athleteToString(athleteToToast)} is now toasted. Use \`/${SLASH_COMMAND["name"]} fresh ${athleteToString(
             athleteToToast
-        )}\` when ${athleteToString(athleteToToast)} is feeling good again.`
+        )}\` when ${athleteToString(athleteToToast)} feels fresh again.`
     );
 }

@@ -37,18 +37,18 @@ export function createStatusMessage(config: Config, timer: Timer): EmbedBuilder 
 
         embedBuilder = new EmbedBuilder()
             .setTitle(`${currentAthlete.name} (change <t:${timer.nextChangeTime}:R>)`)
-            .addFields([{ name: "Next athlete", value: `${nextAthlete.name} (${nextAthlete.time}s)` }])
+            .addFields([{ name: "Next weather", value: `${nextAthlete.name} (${nextAthlete.time}s)` }])
             .setFooter({ text: DEFAULT_FOOTER });
     } else {
         embedBuilder = new EmbedBuilder()
             .setTitle(`Waiting for the start <t:${timer.nextChangeTime}:R>`)
-            .addFields([{ name: "First athlete", value: `${currentAthlete.name} (${currentAthlete.time}s)` }])
+            .addFields([{ name: "First weather", value: `${currentAthlete.name} (${currentAthlete.time}s)` }])
             .setFooter({ text: DEFAULT_FOOTER });
     }
 
     embedBuilder.addFields([
         {
-            name: "Toasted athletes",
+            name: "Toasted weathers",
             value:
                 timer.disabledAthletes.length === 0
                     ? "*Everybody's still fresh*"

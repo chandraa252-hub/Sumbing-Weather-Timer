@@ -24,7 +24,7 @@ export async function athlete(interaction: ChatInputCommandInteraction) {
 
     const parsedUser = await parseUser(options.athlete, guild);
     if (!config.athletes.some((a) => isSameAthlete(a, parsedUser))) {
-        await interaction.editReply(`${options.athlete} is not configured as an athlete`);
+        await interaction.editReply(`${options.athlete} is not configured as a weather`);
         return;
     }
 
