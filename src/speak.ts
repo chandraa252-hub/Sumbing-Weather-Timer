@@ -1,4 +1,4 @@
-import { createAudioPlayer, createAudioResource, VoiceConnection } from "@discordjs/voice";
+import { createAudioPlayer, createAudioResource, VoiceConnection, VoiceConnectionStatus } from "@discordjs/voice";
 import { getAudioUrl } from "google-tts-api";
 import { environment } from "./environment";
 import { LANGUAGES } from "./languages";
@@ -7,6 +7,11 @@ import logger from "./services/logger";
 import { download } from "./util/download";
 
 export async function speak(text: string, locale: Locale, connection: VoiceConnection): Promise<void> {
+    if (connection.state.status !== VoiceConnectionStatus.Ready) {
+        logger.info(connection.joinConfig.guildId, `Skipping TTS (VC not Ready, status: ${connection.state.status})`);
+        return;
+    }
+
     if (environment.logging.speak) {
         logger.info(connection.joinConfig.guildId, `Speak: "${text}"`);
     }

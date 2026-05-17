@@ -20,7 +20,10 @@ export async function getVoiceConnection(config: Config, member?: GuildMember): 
     {
         // Rejoin currently active voice connection
         const guildConnection = getActiveVoiceConnection(config.guildId, environment.botId);
-        if (guildConnection?.state.status === VoiceConnectionStatus.Ready) {
+        if (
+            guildConnection &&
+            guildConnection.state.status !== VoiceConnectionStatus.Destroyed
+        ) {
             connection = guildConnection;
         }
     }

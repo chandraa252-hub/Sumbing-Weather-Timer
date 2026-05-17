@@ -15,19 +15,14 @@ export async function connectToChannel(channel: VoiceChannel): Promise<VoiceConn
         group: environment.botId,
     });
 
+    logger.info(channel.guildId, `Joined VC:${channel.id}`);
+
     try {
-        await entersState(connection, VoiceConnectionStatus.Signalling, 10_000);
-        logger.info(channel.guildId, `Joined VC:${channel.id}`);
-        return connection;
-    } catch (sigError) {
-        logger.info(channel.guildId, `Signalling failed, trying Connecting state...`);
-        try {
-            await entersState(connection, VoiceConnectionStatus.Connecting, 10_000);
-            logger.info(channel.guildId, `Joined VC (connecting):${channel.id}`);
-            return connection;
-        } catch (connError) {
-            logger.info(channel.guildId, `Voice connection failed, returning connection anyway`);
-            return connection;
-        }
+        await entersState(connection, VoiceConnectionStatus.Ready, 20_000);
+        logger.info(channel.guildId, `VC Ready:${channel.id}`);
+    } catch {
+        logger.info(channel.guildId, `VC not Ready (no audio), status: ${connection.state.status}`);
     }
+
+    return connection;
 }
