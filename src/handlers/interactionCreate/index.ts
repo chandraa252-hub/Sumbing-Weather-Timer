@@ -2,6 +2,10 @@ import { Interaction } from "discord.js";
 import { SLASH_COMMAND } from "../../constants";
 import logger from "../../services/logger";
 import { HandlerProps } from "../../services/sentry";
+import { BUTTON_PLUS10, BUTTON_SKIP, BUTTON_TOAST, updateStatusMessage } from "../../services/statusMessage";
+import { addTimeToCurrentAthlete, setAthleteAsFresh, setAthleteAsToast, skipCurrentAthlete } from "../../services/timer";
+import { configRepo } from "../../persistence";
+import { timerRepo } from "../../persistence";
 import { reset } from "./reset";
 import { athlete } from "./athlete";
 import { athletes } from "./athletes";
@@ -31,6 +35,52 @@ const commandsMap = {
 };
 
 export async function handleInteractionCreate({ args: [interaction], scope }: HandlerProps<[Interaction]>) {
+    if (interaction.isButton() && interaction.inGuild()) {
+        await interaction.deferUpdate();
+        const guildId = interaction.guildId;
+        const userId = interaction.user.id;
+
+        logger.info(guildId, `Button: ${interaction.customId} by ${userId}`);
+
+        const timer = await timerRepo.get(guildId);
+        if (!timer) return;
+
+        if (
+            timer.status?.channelId !== interaction.channelId ||
+            timer.status?.messageId !== interaction.message.id
+        ) {
+            return;
+        }
+
+        switch (interaction.customId) {
+            case BUTTON_SKIP:
+                await skipCurrentAthlete(guildId);
+                await updateStatusMessage(guildId, scope);
+                break;
+
+            case BUTTON_PLUS10:
+                await addTimeToCurrentAthlete(guildId, 10);
+                await updateStatusMessage(guildId, scope);
+                break;
+
+            case BUTTON_TOAST: {
+                const config = await configRepo.get(guildId);
+                const athlete = config.athletes.find((a) => a.userId === userId);
+                if (!athlete) return;
+
+                const isAlreadyToasted = timer.disabledAthletes.some((a) => a.userId === userId);
+                if (isAlreadyToasted) {
+                    await setAthleteAsFresh(guildId, athlete);
+                } else {
+                    await setAthleteAsToast(guildId, athlete);
+                }
+                await updateStatusMessage(guildId, scope);
+                break;
+            }
+        }
+        return;
+    }
+
     if (!interaction.isChatInputCommand() || !interaction.inGuild()) {
         return;
     }

@@ -1,5 +1,5 @@
 import { type Scope } from "@sentry/node";
-import { EmbedBuilder, Message, TextChannel } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, TextChannel } from "discord.js";
 import { SLASH_COMMAND } from "../constants";
 import { client } from "../discord";
 import { configRepo } from "../persistence";
@@ -8,9 +8,30 @@ import type { Config, Timer } from "../types";
 import { EMOJI_PLUS10, EMOJI_SKIP, EMOJI_TOAST } from "../util/emojis";
 import isSameAthlete from "../util/isSameAthlete";
 import logger from "./logger";
-import { getNextAthleteIndex, isDisabledAthlete } from "./timer";
+import { getNextAthleteIndex } from "./timer";
 
 const DEFAULT_FOOTER = `Use \`/${SLASH_COMMAND["name"]} stop\` to stop the timer.`;
+
+export const BUTTON_SKIP = "timer_skip";
+export const BUTTON_PLUS10 = "timer_plus10";
+export const BUTTON_TOAST = "timer_toast";
+
+function createTimerButtons(): ActionRowBuilder<ButtonBuilder> {
+    return new ActionRowBuilder<ButtonBuilder>().addComponents(
+        new ButtonBuilder()
+            .setCustomId(BUTTON_PLUS10)
+            .setLabel(`${EMOJI_PLUS10} +10s`)
+            .setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder()
+            .setCustomId(BUTTON_SKIP)
+            .setLabel(`${EMOJI_SKIP} Next rider`)
+            .setStyle(ButtonStyle.Primary),
+        new ButtonBuilder()
+            .setCustomId(BUTTON_TOAST)
+            .setLabel(`${EMOJI_TOAST} I'm dead`)
+            .setStyle(ButtonStyle.Danger),
+    );
+}
 
 export function createStatusMessage(config: Config, timer: Timer): EmbedBuilder {
     const currentAthlete = config.athletes[timer.currentAthleteIndex];
@@ -22,16 +43,12 @@ export function createStatusMessage(config: Config, timer: Timer): EmbedBuilder 
         embedBuilder = new EmbedBuilder()
             .setTitle(`${currentAthlete.name} (change <t:${timer.nextChangeTime}:R>)`)
             .addFields([{ name: "Next athlete", value: `${nextAthlete.name} (${nextAthlete.time}s)` }])
-            .setFooter({
-                text: `Click ${EMOJI_PLUS10} to add 10 seconds and ${EMOJI_SKIP} to go to the next rider. Click ${EMOJI_TOAST} when you are dead.\n${DEFAULT_FOOTER}`,
-            });
+            .setFooter({ text: DEFAULT_FOOTER });
     } else {
         embedBuilder = new EmbedBuilder()
             .setTitle(`Waiting for the start <t:${timer.nextChangeTime}:R>`)
             .addFields([{ name: "First athlete", value: `${currentAthlete.name} (${currentAthlete.time}s)` }])
-            .setFooter({
-                text: `Click ${EMOJI_PLUS10} to add 10 seconds and ${EMOJI_SKIP} to start. Click ${EMOJI_TOAST} when you are dead.\n${DEFAULT_FOOTER}`,
-            });
+            .setFooter({ text: DEFAULT_FOOTER });
     }
 
     embedBuilder.addFields([
@@ -61,10 +78,10 @@ export async function sendStatusMessage(channel: TextChannel, _scope: Scope) {
 
     let message: Message;
     try {
-        message = await channel.send({ embeds: [createStatusMessage(config, timer)] });
-        message.react(EMOJI_PLUS10);
-        message.react(EMOJI_SKIP);
-        message.react(EMOJI_TOAST);
+        message = await channel.send({
+            embeds: [createStatusMessage(config, timer)],
+            components: [createTimerButtons()],
+        });
 
         await timerRepo.update(guildId, (t) => ({
             ...t,
@@ -87,7 +104,10 @@ export async function updateStatusMessage(guildId: string, _scope?: Scope) {
     try {
         const channel = (await client.channels.fetch(timer.status.channelId)) as TextChannel;
         const message = await channel.messages.fetch(timer.status.messageId);
-        await message.edit({ embeds: [createStatusMessage(config, timer)] });
+        await message.edit({
+            embeds: [createStatusMessage(config, timer)],
+            components: [createTimerButtons()],
+        });
     } catch (e) {
         logger.warn(guildId, "Could not update status message");
 
