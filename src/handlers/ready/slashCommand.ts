@@ -12,6 +12,15 @@ export async function initCommands() {
     const command = getSlashCommand();
 
     const existingCommands = await applicationCommands.fetch();
+
+    // Delete any stale commands that don't match the current command name
+    for (const [, cmd] of existingCommands) {
+        if (cmd.name !== command.name) {
+            logger.info(undefined, `Deleting stale slash command: ${cmd.name}`);
+            await applicationCommands.delete(cmd.id);
+        }
+    }
+
     const existingCommand = existingCommands.find((cmd) => cmd.name === command.name);
 
     if (existingCommand) {
