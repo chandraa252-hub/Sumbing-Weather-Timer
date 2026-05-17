@@ -2,9 +2,8 @@ import { Interaction } from "discord.js";
 import { SLASH_COMMAND } from "../../constants";
 import logger from "../../services/logger";
 import { HandlerProps } from "../../services/sentry";
-import { BUTTON_PLUS10, BUTTON_SKIP, BUTTON_TOAST, updateStatusMessage } from "../../services/statusMessage";
-import { addTimeToCurrentAthlete, setAthleteAsFresh, setAthleteAsToast, skipCurrentAthlete } from "../../services/timer";
-import { configRepo } from "../../persistence";
+import { BUTTON_SKIP, BUTTON_STOP, updateStatusMessage } from "../../services/statusMessage";
+import { skipCurrentAthlete, stopTimer } from "../../services/timer";
 import { timerRepo } from "../../persistence";
 import { reset } from "./reset";
 import { athlete } from "./athlete";
@@ -58,25 +57,9 @@ export async function handleInteractionCreate({ args: [interaction], scope }: Ha
                 await updateStatusMessage(guildId, scope);
                 break;
 
-            case BUTTON_PLUS10:
-                await addTimeToCurrentAthlete(guildId, 10);
-                await updateStatusMessage(guildId, scope);
+            case BUTTON_STOP:
+                await stopTimer(guildId, scope);
                 break;
-
-            case BUTTON_TOAST: {
-                const config = await configRepo.get(guildId);
-                const athlete = config.athletes.find((a) => a.userId === userId);
-                if (!athlete) return;
-
-                const isAlreadyToasted = timer.disabledAthletes.some((a) => a.userId === userId);
-                if (isAlreadyToasted) {
-                    await setAthleteAsFresh(guildId, athlete);
-                } else {
-                    await setAthleteAsToast(guildId, athlete);
-                }
-                await updateStatusMessage(guildId, scope);
-                break;
-            }
         }
         return;
     }

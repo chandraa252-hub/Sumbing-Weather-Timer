@@ -5,7 +5,7 @@ import { client } from "../discord";
 import { configRepo } from "../persistence";
 import { timerRepo } from "../persistence";
 import type { Config, Timer } from "../types";
-import { EMOJI_PLUS10, EMOJI_SKIP, EMOJI_TOAST } from "../util/emojis";
+import { EMOJI_SKIP } from "../util/emojis";
 import isSameAthlete from "../util/isSameAthlete";
 import logger from "./logger";
 import { getNextAthleteIndex } from "./timer";
@@ -13,22 +13,17 @@ import { getNextAthleteIndex } from "./timer";
 const DEFAULT_FOOTER = `Use \`/${SLASH_COMMAND["name"]} stop\` to stop the timer.`;
 
 export const BUTTON_SKIP = "timer_skip";
-export const BUTTON_PLUS10 = "timer_plus10";
-export const BUTTON_TOAST = "timer_toast";
+export const BUTTON_STOP = "timer_stop";
 
 function createTimerButtons(): ActionRowBuilder<ButtonBuilder> {
     return new ActionRowBuilder<ButtonBuilder>().addComponents(
-        new ButtonBuilder()
-            .setCustomId(BUTTON_PLUS10)
-            .setLabel(`${EMOJI_PLUS10} +10s`)
-            .setStyle(ButtonStyle.Secondary),
         new ButtonBuilder()
             .setCustomId(BUTTON_SKIP)
             .setLabel(`${EMOJI_SKIP} Next rider`)
             .setStyle(ButtonStyle.Primary),
         new ButtonBuilder()
-            .setCustomId(BUTTON_TOAST)
-            .setLabel(`${EMOJI_TOAST} I'm dead`)
+            .setCustomId(BUTTON_STOP)
+            .setLabel(`⏹️ Stop timer`)
             .setStyle(ButtonStyle.Danger),
     );
 }
