@@ -8,7 +8,6 @@ import { download } from "./util/download";
 
 export async function speak(text: string, locale: Locale, connection: VoiceConnection): Promise<void> {
     if (connection.state.status !== VoiceConnectionStatus.Ready) {
-        logger.info(connection.joinConfig.guildId, `Skipping TTS (VC not Ready, status: ${connection.state.status})`);
         return;
     }
 
