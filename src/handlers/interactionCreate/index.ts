@@ -2,6 +2,8 @@ import { Interaction } from "discord.js";
 import { SLASH_COMMAND } from "../../constants";
 import logger from "../../services/logger";
 import { HandlerProps } from "../../services/sentry";
+import { getVoiceConnection } from "@discordjs/voice";
+import { environment } from "../../environment";
 import { BUTTON_SKIP, BUTTON_STOP, updateStatusMessage } from "../../services/statusMessage";
 import { skipCurrentAthlete, stopTimer } from "../../services/timer";
 import { timerRepo } from "../../persistence";
@@ -57,9 +59,16 @@ export async function handleInteractionCreate({ args: [interaction], scope }: Ha
                 await updateStatusMessage(guildId, scope);
                 break;
 
-            case BUTTON_STOP:
+            case BUTTON_STOP: {
                 await stopTimer(guildId, scope);
+                const conn = getVoiceConnection(guildId, environment.botId);
+                if (conn) {
+                    logger.info(guildId, `Disconnecting from VC:${conn.joinConfig.channelId}`);
+                    conn.disconnect();
+                    conn.destroy();
+                }
                 break;
+            }
         }
         return;
     }
