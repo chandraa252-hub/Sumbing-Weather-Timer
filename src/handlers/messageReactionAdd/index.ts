@@ -3,7 +3,6 @@ import { client } from "../../discord";
 import { configRepo } from "../../persistence";
 import { timerRepo } from "../../persistence";
 import logger from "../../services/logger";
-import { hasManageMessagesPermissions } from "../../services/permissions";
 import { HandlerProps } from "../../services/sentry";
 import { updateStatusMessage } from "../../services/statusMessage";
 import { addTimeToCurrentAthlete, setAthleteAsToast, skipCurrentAthlete } from "../../services/timer";
@@ -84,11 +83,16 @@ export async function handleMessageReactionAdd({
 }
 
 async function removeReaction(messageReaction: MessageReaction, user: User | PartialUser) {
-    if (hasManageMessagesPermissions(messageReaction.message.guild!)) {
+    try {
+        await messageReaction.users.remove(user.id);
+    } catch {
+        logger.warn(messageReaction.message.guild!.id, `Failed to remove user reaction (no MANAGE_MESSAGES?), resetting bot reaction`);
         try {
-            await messageReaction.users.remove(user.id);
+            const emoji = messageReaction.emoji.name!;
+            await messageReaction.message.reactions.cache.get(emoji)?.remove();
+            await messageReaction.message.react(emoji);
         } catch {
-            logger.warn(messageReaction.message.guild!.id, `Failed to remove reaction`);
+            logger.warn(messageReaction.message.guild!.id, `Failed to reset reaction`);
         }
     }
 }
